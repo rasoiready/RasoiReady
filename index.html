@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>RasoiReady | Farm Fresh, Kitchen Ready</title>
+  <style>
+    :root {
+      /* Light Theme Variables */
+      --primary: #0c831f;
+      --primary-dark: #075e15;
+      --sea-blue: #0284c7;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #1c1c1c;
+      --muted: #666;
+      --border: #e2e8f0;
+      --countdown-bg: linear-gradient(135deg, #e11d48, #be123c);
+      --input-bg: #fff;
+    }
+
+    body.dark-theme {
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --text: #e0e0e0;
+      --muted: #a0a0a0;
+      --border: #333333;
+      --countdown-bg: linear-gradient(135deg, #9f1239, #881337);
+      --input-bg: #2d2d2d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.3s, color 0.3s; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 70px; } /* Padding for mobile nav */
+
+    /* Top Nav */
+    header { background: var(--card-bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background:#fff; }
+    .brand-title { font-size: 18px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+    .brand-sub { font-size: 11px; color: var(--muted); }
+    
+    .nav-controls { display: flex; gap: 8px; align-items: center; }
+    .lang-select, .theme-btn { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    
+    /* Countdown Banner */
+    .countdown-banner { background: var(--countdown-bg); color: white; padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .timer-box { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+
+    /* Intro / About Section */
+    .intro-section { max-width: 1200px; margin: 15px auto; padding: 0 16px; }
+    .intro-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .intro-title { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;}
+    .intro-text { font-size: 13px; line-height: 1.5; color: var(--text); margin-bottom: 10px; }
+    .highlight-box { background: rgba(225, 29, 72, 0.1); border-left: 4px solid #e11d48; padding: 10px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #be123c; }
+    body.dark-theme .highlight-box { color: #fda4af; }
+
+    /* Category Navigation */
+    .category-header { max-width: 1200px; margin: 20px auto 10px; padding: 0 16px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+    .category-header::-webkit-scrollbar { display: none; }
+    .cat-btn { padding: 10px 16px; background: var(--card-bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 700; white-space: nowrap; cursor: pointer; flex: 1; text-align: center; }
+    .cat-btn.active-veg { background: var(--primary); color: white; border-color: var(--primary); }
+    .cat-btn.active-sea { background: var(--sea-blue); color: white; border-color: var(--sea-blue); }
+    .cat-btn.disabled { opacity: 0.6; cursor: not-allowed; background: #f1f5f9; color: #94a3b8; }
+    body.dark-theme .cat-btn.disabled { background: #334155; color: #94a3b8; }
+
+    /* Product Grid */
+    .catalog { max-width: 1200px; margin: 10px auto 30px; padding: 0 16px; }
+    .section-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; margin-top: 20px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .product-card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .premium-badge { position: absolute; top: 6px; left: 6px; background: #fbbf24; color: #78350f; font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 4px; z-index: 2; }
+    .product-img { width: 100%; height: 130px; object-fit: cover; background: #fff; }
+    .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; }
+    .product-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; color: var(--text); }
+    .product-weight { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .card-bottom { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+    .price { font-size: 15px; font-weight: 800; color: var(--text); }
+    .btn-add { background: rgba(12, 131, 31, 0.1); color: var(--primary); border: 1px solid var(--primary); padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size:12px; cursor: pointer; }
+    body.dark-theme .btn-add { background: var(--primary); color: #fff; }
+    .qty-counter { display: flex; align-items: center; background: var(--primary); color: #fff; border-radius: 6px; overflow: hidden; }
+    .qty-counter button { background: none; border: none; color: #fff; width: 24px; height: 28px; font-weight: 800; font-size: 14px; cursor: pointer; }
+    .qty-counter span { padding: 0 6px; font-weight: 700; font-size: 13px; }
+
+    /* Contact Footer */
+    .contact-footer { max-width: 1200px; margin: 20px auto 40px; padding: 20px 16px; text-align: center; background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .contact-footer h3 { font-size: 16px; margin-bottom: 10px; color: var(--primary); }
+    .contact-footer p { font-size: 13px; color: var(--text); margin-bottom: 5px; font-weight: 600; }
+    .contact-footer a { color: var(--sea-blue); text-decoration: none; }
+
+    /* Mobile Bottom Dashboard Nav */
+    .mobile-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 60; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700; color: var(--muted); cursor: pointer; border:none; background:none;}
+    .nav-item.active { color: var(--primary); }
+    .nav-icon { font-size: 20px; margin-bottom: 4px; }
+    .cart-badge { background: #e11d48; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: -5px; right: -10px; }
+
+    /* Drawers & Modals (Cart & Admin) */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; z-index: 100; backdrop-filter: blur(2px); }
+    .drawer { position: fixed; right: 0; top: 0; bottom: 0; width: 100%; max-width: 400px; background: var(--card-bg); z-index: 101; display: none; flex-direction: column; }
+    .drawer-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .drawer-body { padding: 16px; overflow-y: auto; flex-grow: 1; }
+    .drawer-footer { padding: 16px; border-top: 1px solid var(--border); background: var(--bg); }
+    .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: var(--input-bg); color: var(--text); margin-bottom: 10px; }
+    .btn-submit { width: 100%; background: var(--primary); color: #fff; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px;}
+    
+    /* Admin Specific */
+    #adminView { display: none; max-width: 1200px; margin: 20px auto; padding: 0 16px; padding-bottom: 80px;}
+    .table-container { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; margin-top: 10px;}
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg); font-weight: 700; }
+
+    @media(min-width: 769px) {
+      .mobile-nav { display: none; }
+      body { padding-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <div class="brand">
+        <!-- Exact Logo File Name Reference -->
+        <img src="RasoiReady Fresh Cooking Badge.png" alt="Logo" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2909/2909808.png'">
+        <div>
+          <div class="brand-title">RasoiReady</div>
+          <div class="brand-sub">📍 Jalgaon 425001</div>
+        </div>
+      </div>
+      <div class="nav-controls">
+        <select class="lang-select" id="langSwitcher" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="mr">मराठी</option>
+          <option value="hi">हिंदी</option>
+        </select>
+        <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Excitement Countdown -->
+  <div class="countdown-banner" id="launchBanner">
+    <span data-i18n="launching">🚀 Grand Launch in Jalgaon!</span>
+    <div class="timer-box" id="timer">00d 00h 00m 00s</div>
+  </div>
+
+  <!-- STOREFRONT VIEW -->
+  <div id="storeView">
+    
+    <!-- Introduction Section -->
+    <div class="intro-section">
+      <div class="intro-card">
+        <div class="intro-title" data-i18n="intro_title">🌿 100% Separate Veg & Non-Veg Kitchens</div>
+        <div class="intro-text" data-i18n="intro_desc">
+          We bring you premium, hygienically cut rare vegetables like Gawar, Shevga, Spinach, and Methi directly from the farm. 
+          <br><br><b>Special for Jalgaonkars:</b> Love eating crabs but hate the messy cleaning process? We provide perfectly cleaned and boiled crabs & prawns. Just open the pack and cook! Every order includes a step-by-step cooking manual.
+        </div>
+        <div class="highlight-box" data-i18n="intro_offer">
+          🎁 New Opening Offer: Free Readymade Original Khandeshi 5-Star Taste Masala with every order!
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Nav -->
+    <div class="category-header">
+      <button class="cat-btn active-veg" onclick="scrollToSection('veg-section')"><span data-i18n="cat_veg">🥬 Fresh Veggies</span></button>
+      <button class="cat-btn" style="background:var(--card-bg);" onclick="scrollToSection('sea-section')"><span data-i18n="cat_sea">🦐 Sea Food</span></button>
+      <button class="cat-btn disabled"><span data-i18n="cat_nonveg">🍗 Non-Veg (Coming Soon)</span></button>
+    </div>
+
+    <!-- Catalog -->
+    <div class="catalog">
+      <!-- Veg Section -->
+      <h2 class="section-title" id="veg-section" style="color:var(--primary);" data-i18n="title_veg">Premium Cut Vegetables</h2>
+      <div class="product-grid" id="gridVeg"></div>
+
+      <!-- Sea Food Section -->
+      <h2 class="section-title" id="sea-section" style="color:var(--sea-blue);" data-i18n="title_sea">Cleaned Sea Food</h2>
+      <div class="product-grid" id="gridSea"></div>
+    </div>
+
+    <!-- Footer Support -->
+    <div class="contact-footer">
+      <h3 data-i18n="footer_support">24/7 Customer Support</h3>
+      <p>📞 WhatsApp: <a href="https://wa.me/919699617990" target="_blank">+91 9699617990</a></p>
+      <p>✉️ Email: <a href="mailto:rasoiready05@gmail.com">rasoiready05@gmail.com</a></p>
+    </div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div id="adminView">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2>Admin Dashboard</h2>
+      <button class="btn-submit" style="width:auto; padding:8px 16px;" onclick="toggleAdminView()">Exit</button>
+    </div>
+
+    <div style="background:var(--card-bg); padding:16px; border-radius:8px; border:1px solid var(--border); margin-bottom:16px;">
+      <h3 style="margin-bottom:10px;">+ Add New Product</h3>
+      <input type="text" id="newPName" class="form-control" placeholder="Product Name (e.g. Chopped Spinach)">
+      <input type="text" id="newPWeight" class="form-control" placeholder="Weight (e.g. 250g)">
+      <input type="number" id="newPPrice" class="form-control" placeholder="Price (₹)">
+      <select id="newPCategory" class="form-control">
+        <option value="Veg">Veg (Vegetables)</option>
+        <option value="Sea Food">Sea Food</option>
+        <option value="Non Veg">Non Veg</option>
+      </select>
+      <input type="text" id="newPImg" class="form-control" placeholder="Image URL (Optional)">
+      <button class="btn-submit" onclick="addNewProduct()">Add to Live Website</button>
+    </div>
+
+    <h3>Live Inventory Management</h3>
+    <div class="table-container">
+      <table>
+        <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th></tr></thead>
+        <tbody id="adminProductsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Dashboard -->
+  <nav class="mobile-nav">
+    <button class="nav-item active" onclick="switchMobileNav('home')">
+      <div class="nav-icon">🏠</div>
+      <span data-i18n="nav_home">Home</span>
+    </button>
+    <button class="nav-item" onclick="openCart()" style="position:relative;">
+      <div class="nav-icon">🛒</div>
+      <span data-i18n="nav_cart">Cart</span>
+      <div class="cart-badge" id="bottomCartCount">0</div>
+    </button>
+    <button class="nav-item" onclick="toggleAdminView()">
+      <div class="nav-icon">⚙️</div>
+      <span data-i18n="nav_admin">Admin</span>
+    </button>
+  </nav>
+
+  <!-- Cart Drawer -->
+  <div class="overlay" id="overlay" onclick="closeCart()"></div>
+  <div class="drawer" id="cartDrawer">
+    <div class="drawer-header">
+      <h3 data-i18n="my_cart">My Cart</h3>
+      <button onclick="closeCart()" style="border:none; background:none; color:var(--text); font-size:24px; cursor:pointer;">&times;</button>
+    </div>
+    <div class="drawer-body" id="cartItemsList"></div>
+    <div class="drawer-footer">
+      <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold;">
+        <span data-i18n="to_pay">Total (COD):</span>
+        <span id="billTotal">₹0</span>
+      </div>
+      <input type="text" id="custName" class="form-control" data-i18n-placeholder="ph_name" placeholder="Full Name" />
+      <input type="text" id="custAddress" class="form-control" data-i18n-placeholder="ph_address" placeholder="Jalgaon Address" />
+      <input type="tel" id="custPhone" class="form-control" data-i18n-placeholder="ph_phone" placeholder="WhatsApp Number" />
+      <button class="btn-submit" data-i18n="confirm_order" onclick="placeOrder()">Order via WhatsApp</button>
+    </div>
+  </div>
+
+  <script>
+    // --- THEME ---
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      localStorage.setItem('rr_theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+    }
+    if (localStorage.getItem('rr_theme') === 'dark') document.body.classList.add('dark-theme');
+
+    // --- COUNTDOWN ---
+    const targetDate = new Date("Oct 20, 2026 00:00:00").getTime();
+    setInterval(() => {
+      const distance = targetDate - new Date().getTime();
+      if (distance < 0) return document.getElementById("timer").innerHTML = "WE ARE LIVE!";
+      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById("timer").innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+    }, 1000);
+
+    // --- TRANSLATIONS ---
+    const dict = {
+      en: {
+        launching: "🚀 Grand Launch in Jalgaon: Oct 20, 2026!",
+        intro_title: "🌿 100% Separate Veg & Non-Veg Kitchens",
+        intro_desc: "We bring you premium, hygienically cut rare vegetables like Gawar, Shevga, Spinach, and Methi directly from the farm. <br><br><b>Special for Jalgaonkars:</b> Love eating crabs but hate the messy cleaning process? We provide perfectly cleaned and boiled crabs & prawns. Just open the pack and cook! Every order includes a step-by-step cooking manual.",
+        intro_offer: "🎁 New Opening Offer: Free Readymade Original Khandeshi 5-Star Taste Masala with every order!",
+        cat_veg: "🥬 Fresh Veggies", cat_sea: "🦐 Sea Food", cat_nonveg: "🍗 Non-Veg (Coming Soon)",
+        title_veg: "Premium Cut Vegetables", title_sea: "Cleaned Sea Food",
+        footer_support: "24/7 Customer Support",
+        nav_home: "Home", nav_cart: "Cart", nav_admin: "Admin",
+        my_cart: "My Cart", to_pay: "Total to Pay (COD):", confirm_order: "Order via WhatsApp",
+        ph_name: "Full Name", ph_address: "Delivery Address (Jalgaon)", ph_phone: "WhatsApp Number"
+      },
+      mr: {
+        launching: "🚀 जळगावात भव्य शुभारंभ: २० ऑक्टोबर २०२६!",
+        intro_title: "🌿 व्हेज आणि नॉन-व्हेजसाठी १००% स्वतंत्र किचन",
+        intro_desc: "आम्ही थेट शेतातून आणतो प्रीमियम, स्वच्छ चिरलेल्या दुर्मिळ भाज्या जसे गवार, शेवगा, पालक आणि मेथी. <br><br><b>जळगावकरांसाठी खास:</b> खेकडे खायला आवडतात पण साफ करायला कंटाळा येतो? आम्ही देतो पूर्णपणे स्वच्छ आणि उकडलेले खेकडे व कोळंबी. फक्त पॅकेट उघडा आणि शिजवा! प्रत्येक ऑर्डरसोबत कुकिंग मॅन्युअल मोफत.",
+        intro_offer: "🎁 ओपनिंग ऑफर: प्रत्येक ऑर्डरसोबत अस्सल खान्देशी ५-स्टार टेस्ट मसाला अगदी मोफत!",
+        cat_veg: "🥬 ताज्या भाज्या", cat_sea: "🦐 सीफूड", cat_nonveg: "🍗 नॉन-व्हेज (लवकरच)",
+        title_veg: "प्रीमियम चिरलेल्या भाज्या", title_sea: "स्वच्छ केलेले सीफूड",
+        footer_support: "२४/७ ग्राहक सेवा",
+        nav_home: "होम", nav_cart: "कार्ट", nav_admin: "अॅडमिन",
+        my_cart: "माझी कार्ट", to_pay: "एकूण रक्कम (COD):", confirm_order: "WhatsApp वर ऑर्डर करा",
+        ph_name: "पूर्ण नाव", ph_address: "पत्ता (जळगाव)", ph_phone: "WhatsApp नंबर"
+      },
+      hi: {
+        launching: "🚀 जलगांव में भव्य शुभारंभ: 20 अक्टूबर 2026!",
+        intro_title: "🌿 वेज और नॉन-वेज के लिए 100% अलग किचन",
+        intro_desc: "हम सीधे खेत से लाते हैं प्रीमियम, साफ कटी हुई सब्जियां जैसे ग्वार, सहजन, पालक और मेथी। <br><br><b>जलगांव के लिए खास:</b> केकड़े खाना पसंद है लेकिन साफ करना मुश्किल लगता है? हम देते हैं पूरी तरह से साफ और उबले हुए केकड़े और झींगे। बस पैकेट खोलें और पकाएं! हर ऑर्डर के साथ कुकिंग मैनुअल मुफ्त।",
+        intro_offer: "🎁 ओपनिंग ऑफर: हर ऑर्डर के साथ असली खानदेशी 5-स्टार टेस्ट मसाला बिलकुल मुफ्त!",
+        cat_veg: "🥬 ताजी सब्जियां", cat_sea: "🦐 सीफूड", cat_nonveg: "🍗 नॉन-वेज (जल्द आ रहा है)",
+        title_veg: "प्रीमियम कटी हुई सब्जियां", title_sea: "साफ किया हुआ सीफूड",
+        footer_support: "24/7 ग्राहक सहायता",
+        nav_home: "होम", nav_cart: "कार्ट", nav_admin: "एडमिन",
+        my_cart: "मेरी कार्ट", to_pay: "कुल राशि (COD):", confirm_order: "WhatsApp पर ऑर्डर करें",
+        ph_name: "पूरा नाम", ph_address: "डिलीवरी का पता (जलगांव)", ph_phone: "WhatsApp नंबर"
+      }
+    };
+
+    function changeLanguage(lang) {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if(dict[lang][key]) el.innerHTML = dict[lang][key]; // innerHTML for <br> support
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if(dict[lang][key]) el.placeholder = dict[lang][key];
+      });
+      localStorage.setItem('rr_lang', lang);
+    }
+    const savedLang = localStorage.getItem('rr_lang') || 'en';
+    document.getElementById('langSwitcher').value = savedLang;
+    changeLanguage(savedLang);
+
+    // --- DATA & CART ---
+    const INIT_PRODUCTS = [
+      { id: 101, name: "Chopped Gawar (Cluster Beans)", weight: "250 g", price: 45, category: "Veg", stock: true, img: "https://images.unsplash.com/photo-1557844352-761f2565b576?w=300" },
+      { id: 102, name: "Chopped Shevga (Drumsticks)", weight: "250 g", price: 35, category: "Veg", stock: true, img: "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=300" },
+      { id: 103, name: "Cleaned Spinach (Palak)", weight: "1 Bunch", price: 30, category: "Veg", stock: true, img: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300" },
+      { id: 104, name: "Cleaned Methi Leaves", weight: "1 Bunch", price: 25, category: "Veg", stock: true, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300" },
+      { id: 201, name: "Cleaned & Boiled Crabs", weight: "500 g", price: 350, category: "Sea Food", stock: true, img: "https://images.unsplash.com/photo-1559742811-82286364ceaf?w=300" },
+      { id: 202, name: "Cleaned Kolambi (Prawns)", weight: "250 g", price: 280, category: "Sea Food", stock: true, img: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300" }
+    ];
+
+    let products = JSON.parse(localStorage.getItem("rr_db")) || INIT_PRODUCTS;
+    let cart = {};
+
+    function renderProducts() {
+      const gridVeg = document.getElementById("gridVeg");
+      const gridSea = document.getElementById("gridSea");
+      gridVeg.innerHTML = ""; gridSea.innerHTML = "";
+
+      products.forEach(p => {
+        if(p.category === "Non Veg") return; // Hidden for now
+        const qty = cart[p.id] || 0;
+        const card = `
+          <div class="product-card">
+            <div class="premium-badge">Premium Pack</div>
+            <img src="${p.img || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300'}" class="product-img" loading="lazy">
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-weight">${p.weight}</div>
+              <div class="card-bottom">
+                <span class="price">₹${p.price}</span>
+                ${!p.stock ? '<span style="color:red;font-size:11px;font-weight:bold;">Out of Stock</span>' :
+                  qty === 0 ? `<button class="btn-add" onclick="updateCart(${p.id}, 1)">ADD</button>` :
+                  `<div class="qty-counter"><button onclick="updateCart(${p.id}, -1)">-</button><span>${qty}</span><button onclick="updateCart(${p.id}, 1)">+</button></div>`
+                }
+              </div>
+            </div>
+          </div>
+        `;
+        if(p.category === "Veg") gridVeg.innerHTML += card;
+        if(p.category === "Sea Food") gridSea.innerHTML += card;
+      });
+      updateCartBadge();
+    }
+
+    function updateCart(id, change) {
+      cart[id] = (cart[id] || 0) + change;
+      if (cart[id] <= 0) delete cart[id];
+      renderProducts();
+      renderCartDrawer();
+    }
+
+    function updateCartBadge() {
+      const count = Object.values(cart).reduce((a, b) => a + b, 0);
+      document.getElementById("bottomCartCount").innerText = count;
+      document.getElementById("bottomCartCount").style.display = count > 0 ? "block" : "none";
+    }
+
+    function renderCartDrawer() {
+      const list = document.getElementById("cartItemsList");
+      list.innerHTML = "";
+      let total = 0;
+      for (let id in cart) {
+        const item = products.find(p => p.id == id);
+        if (item) {
+          total += item.price * cart[id];
+          list.innerHTML += `
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+              <div><b>${item.name}</b><br><small>₹${item.price} × ${cart[id]}</small></div>
+              <div class="qty-counter"><button onclick="updateCart(${item.id}, -1)">-</button><span>${cart[id]}</span><button onclick="updateCart(${item.id}, 1)">+</button></div>
+            </div>
+          `;
+        }
+      }
+      document.getElementById("billTotal").innerText = `₹${total}`;
+    }
+
+    function openCart() { renderCartDrawer(); document.getElementById("overlay").style.display="block"; document.getElementById("cartDrawer").style.display="flex"; }
+    function closeCart() { document.getElementById("overlay").style.display="none"; document.getElementById("cartDrawer").style.display="none"; }
+    function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior: 'smooth'}); }
+
+    function placeOrder() {
+      const name = document.getElementById("custName").value;
+      const addr = document.getElementById("custAddress").value;
+      const phone = document.getElementById("custPhone").value;
+      if(!name || !addr || !phone) return alert("Fill all details");
+      
+      let total = 0, items = "";
+      for (let id in cart) {
+        const item = products.find(p => p.id == id);
+        total += item.price * cart[id];
+        items += `• ${item.name} x ${cart[id]}\n`;
+      }
+      if(total === 0) return alert("Cart is empty");
+
+      const msg = encodeURIComponent(`*New Order - RasoiReady*\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${addr}, Jalgaon\n\n*Items:*\n${items}\n*Total:* ₹${total}\n\n_Includes Free Khandeshi Masala & Cooking Manual!_`);
+      window.open(`https://wa.me/919699617990?text=${msg}`, "_blank");
+      cart = {}; closeCart(); renderProducts();
+    }
+
+    // --- ADMIN ---
+    function toggleAdminView() {
+      const store = document.getElementById("storeView"), admin = document.getElementById("adminView");
+      if(admin.style.display === "block") { admin.style.display = "none"; store.style.display = "block"; }
+      else if(prompt("Admin PIN (1234):") === "1234") { store.style.display = "none"; admin.style.display = "block"; renderAdminTable(); }
+    }
+
+    function renderAdminTable() {
+      document.getElementById("adminProductsTable").innerHTML = products.map(p => `
+        <tr>
+          <td><b>${p.name}</b></td>
+          <td>${p.category}</td>
+          <td>₹${p.price}</td>
+          <td><button onclick="toggleStock(${p.id})" style="background:${p.stock?'#0c831f':'#ef4444'}; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">${p.stock?'In Stock':'Out of Stock'}</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleStock(id) {
+      const p = products.find(x => x.id === id);
+      if(p) { p.stock = !p.stock; localStorage.setItem("rr_db", JSON.stringify(products)); renderAdminTable(); renderProducts(); }
+    }
+
+    function addNewProduct() {
+      const name = document.getElementById("newPName").value;
+      const weight = document.getElementById("newPWeight").value;
+      const price = document.getElementById("newPPrice").value;
+      const cat = document.getElementById("newPCategory").value;
+      const img = document.getElementById("newPImg").value;
+      
+      if(!name || !price) return alert("Name and Price required");
+      
+      products.push({ id: Date.now(), name, weight: weight||"Pack", price: parseInt(price), category: cat, stock: true, img: img||"" });
+      localStorage.setItem("rr_db", JSON.stringify(products));
+      alert("Added Successfully!");
+      renderAdminTable(); renderProducts();
+    }
+
+    // Init
+    renderProducts();
+  </script>
+</body>
+</html>
